@@ -1,0 +1,13 @@
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+src/course_ml_streamlit/__init__.py
+src/course_ml_streamlit/main.py
+src/course_ml_streamlit/py.typed
+src/course_ml_streamlit.egg-info/PKG-INFO
+src/course_ml_streamlit.egg-info/SOURCES.txt
+src/course_ml_streamlit.egg-info/dependency_links.txt
+src/course_ml_streamlit.egg-info/not-zip-safe
+src/course_ml_streamlit.egg-info/requires.txt
+src/course_ml_streamlit.egg-info/top_level.txt
