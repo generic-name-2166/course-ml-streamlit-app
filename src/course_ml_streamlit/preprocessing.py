@@ -36,7 +36,7 @@ class PreprocessingConfig:
         Assumes the data is just 1 line
         """
 
-        data_line[self.numeric_columns] = self.robust_sc.fit_transform(
+        data_line[self.numeric_columns] = self.robust_sc.transform(
             data_line[self.numeric_columns]
         )
         return data_line
