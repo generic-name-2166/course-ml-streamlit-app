@@ -3,8 +3,8 @@ import pandas as pd
 from course_ml_streamlit.preprocessing import preprocess
 
 
-# TODO: write tests
 def process_input(data_line: pd.DataFrame) -> pd.DataFrame:
+    # TODO: ensure on input that column has no underscores
     return preprocess(data_line=data_line)
 
 

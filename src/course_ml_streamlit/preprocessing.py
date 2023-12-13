@@ -11,7 +11,12 @@ class PreprocessingConfig:
     Made into a class for convenience
     """
 
-    __slots__ = ("numeric_columns", "category_columns", "resulting_columns", "robust_sc")
+    __slots__ = (
+        "numeric_columns",
+        "category_columns",
+        "resulting_columns",
+        "robust_sc",
+    )
 
     def __init__(self):
         columns = self._load_columns()
@@ -42,7 +47,7 @@ class PreprocessingConfig:
         Always assumes the data is just 1 line
         """
 
-        result_df = data_line.drop(self.category_columns)
+        result_df = data_line.drop(columns=self.category_columns)
 
         for col in self.category_columns:
             oh_encoder = sklearn.preprocessing.OneHotEncoder(
@@ -65,10 +70,36 @@ class PreprocessingConfig:
             )
             result_df = pd.concat([result_df, temp_df], axis=1)
 
-        columns_not_in_result = set(self.resulting_columns) - set(result_df.columns)
-        columns_not_in_model = set(result_df.columns) - set(self.resulting_columns)
+        return _reindex_data(df=result_df, new_index=self.resulting_columns)
 
-        return result_df
+
+def _parse_infrequent_oh_encoded_column(column: str) -> str:
+    """
+    Changes column name to signify that it's infrequent
+    Requires insurance that the input column doesn't have underscores `_`
+    """
+    return f"{column[:column.rfind("_")]}_infrequent_sklearn"
+
+
+def _reindex_data(df: pd.DataFrame, new_index: list[str]) -> pd.DataFrame:
+    """
+    If a column isn't present in the model it gets treated as infrequent.
+    Returns DataFrame with columns that fit the model
+    """
+    resulting_columns = set(new_index)
+    columns_not_in_model = set(df.columns) - resulting_columns
+
+    for column_not_in_model in columns_not_in_model:
+        if column_not_in_model in resulting_columns:
+            continue
+
+        df.drop(columns=column_not_in_model, inplace=True)
+        column_infrequent = _parse_infrequent_oh_encoded_column(column_not_in_model)
+        # This should theoretically never raise a KeyError
+        # because the input columns are predetermined
+        df.at[df.index[0], column_infrequent] = 1
+
+    return df.reindex(columns=new_index, fill_value=0, copy=True)
 
 
 def _config_factory(_instance=PreprocessingConfig()) -> PreprocessingConfig:

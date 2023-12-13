@@ -6,6 +6,8 @@ build-backend = "setuptools.build_meta"
 target-version = "py312"
 
 [tool.pytest.ini_options]
+addopts = "--cov=course_ml_streamlit"
 testpaths = [
     "tests",
 ]
+filterwarnings = "ignore::DeprecationWarning:dateutil.*:"
