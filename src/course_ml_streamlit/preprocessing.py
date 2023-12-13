@@ -20,6 +20,7 @@ class PreprocessingConfig:
         self.resulting_columns = columns.get("resulting_columns", [])
         self.robust_sc = joblib.load("serialized/robust_sc.save")
 
+    @staticmethod
     def _load_columns() -> dict:
         with open("serialized/columns_export.json") as F:
             return json.loads(F.read())
@@ -64,7 +65,8 @@ class PreprocessingConfig:
             )
             result_df = pd.concat([result_df, temp_df], axis=1)
 
-        # TODO: Handle extra columns into infrequent
+        columns_not_in_result = set(self.resulting_columns) - set(result_df.columns)
+        columns_not_in_model = set(result_df.columns) - set(self.resulting_columns)
 
         return result_df
 
