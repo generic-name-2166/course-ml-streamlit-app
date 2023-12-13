@@ -33,7 +33,7 @@ class PreprocessingConfig:
     def scale_numeric(self, data_line: pd.DataFrame) -> pd.DataFrame:
         """
         Scales numeric columns DataFrame and returns it
-        Always assumes the data is just 1 line
+        Assumes the data is just 1 line
         """
 
         data_line[self.numeric_columns] = self.robust_sc.fit_transform(
@@ -44,7 +44,7 @@ class PreprocessingConfig:
     def scale_categorical(self, data_line: pd.DataFrame) -> pd.DataFrame:
         """
         Encodes categorical columns with sklearn.preprocessing.OneHotEncoder
-        Always assumes the data is just 1 line
+        Assumes the data is just 1 line
         """
 
         result_df = data_line.drop(columns=self.category_columns)
@@ -90,9 +90,6 @@ def _reindex_data(df: pd.DataFrame, new_index: list[str]) -> pd.DataFrame:
     columns_not_in_model = set(df.columns) - resulting_columns
 
     for column_not_in_model in columns_not_in_model:
-        if column_not_in_model in resulting_columns:
-            continue
-
         df.drop(columns=column_not_in_model, inplace=True)
         column_infrequent = _parse_infrequent_oh_encoded_column(column_not_in_model)
         # This should theoretically never raise a KeyError
@@ -108,6 +105,8 @@ def _config_factory(_instance=PreprocessingConfig()) -> PreprocessingConfig:
 
 
 def preprocess(data_line: pd.DataFrame) -> pd.DataFrame:
+    if data_line.shape != (1, 15):
+        raise ValueError("data_line is of invalid shape")
     preprocessing_config = _config_factory()
     scaled = preprocessing_config.scale_numeric(data_line=data_line)
     encoded = preprocessing_config.scale_categorical(data_line=scaled)

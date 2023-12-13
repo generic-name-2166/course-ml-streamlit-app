@@ -1,6 +1,6 @@
-import pytest
-import course_ml_streamlit.preprocessing as c_pre
 import pandas as pd
+import course_ml_streamlit.preprocessing as prepro
+import numpy as np
 
 
 SAMPLE_DATA = [
@@ -92,42 +92,44 @@ SAMPLE_COLUMNS = [
 ]
 
 
-def test_instances():
-    a = c_pre._config_factory()
-    b = c_pre._config_factory()
-    assert a is b
+def round_floats(value):
+    if isinstance(value, float) or isinstance(value, np.float_):
+        return round(value, 7)
+    return value
 
 
-def test_infrequent():
-    """Test that columns are claimed as infrequent correctly"""
-    sample_controlled = pd.DataFrame(data=[SAMPLE_DATA[-1]], columns=SAMPLE_COLUMNS)
-    preprocessed = c_pre.preprocess(data_line=sample_controlled)
-    assert preprocessed.at[preprocessed.index[0], "Код_станции_отправления_59220"] == 1
-    assert preprocessed.at[preprocessed.index[0], "Клиент_infrequent_sklearn"] == 1
-    assert preprocessed.at[preprocessed.index[0], "Код_отправителя_груза_3437"] == 1
+df0 = pd.DataFrame(data=[SAMPLE_DATA[0]], columns=SAMPLE_COLUMNS)
+df1 = pd.DataFrame(data=[SAMPLE_DATA[1]], columns=SAMPLE_COLUMNS)
+df2 = pd.DataFrame(data=[SAMPLE_DATA[2]], columns=SAMPLE_COLUMNS)
+df3 = pd.DataFrame(data=[SAMPLE_DATA[3]], columns=SAMPLE_COLUMNS)
+df = pd.DataFrame(data=SAMPLE_DATA, columns=SAMPLE_COLUMNS)
+pre0 = prepro.preprocess(df0)
+pre1 = prepro.preprocess(df1)
+pre2 = prepro.preprocess(df2)
+pre3 = prepro.preprocess(df3)
+print(df3)
+print(pre3)
+pre = pd.concat([pre0, pre1, pre2, pre3])
 
-
-def test_shape():
-    test_df = pd.DataFrame(data=[["Test"]]*15, columns=["Test"])
-    with pytest.raises(ValueError):
-        _ = c_pre.preprocess(test_df)
-
-
-@pytest.mark.parametrize(
-    "data_line",
-    [
-        pd.DataFrame(
-            data=[SAMPLE_DATA[i]],
-            columns=SAMPLE_COLUMNS,
-        )
-        for i, _ in enumerate(SAMPLE_DATA)
-    ],
+pre.to_csv(
+    path_or_buf="serialized/test_sample_pre.csv",
+    columns=pre.columns,
+    header=True,
+    index=True,
+    mode="w",
+    compression=None,
 )
-def test_preprocessing(data_line: pd.DataFrame):
-    """Test that the resulting data is compatible with model"""
-    assert isinstance(data_line, pd.DataFrame)
-    assert data_line.shape == (1, 15)
-    result_df = c_pre.preprocess(data_line=data_line)
-    assert len(result_df.columns) == 82
-    assert result_df.at[0, "Вес груза, тонн"] != 0
-    assert not result_df.isnull().to_numpy().any()
+df.to_csv(
+    path_or_buf="serialized/test_sample.csv",
+    columns=df.columns,
+    header=True,
+    index=True,
+    mode="w",
+    compression=None,
+)
+deser = pd.read_csv(
+    filepath_or_buffer="serialized/test_sample_pre.csv", header=0, index_col=0
+)
+# print(deser.map(round_floats) == pre.map(round_floats))
+print(not pre.isnull().to_numpy().any())
+print(deser.iat[0, 1], pre.iat[0, 1])
