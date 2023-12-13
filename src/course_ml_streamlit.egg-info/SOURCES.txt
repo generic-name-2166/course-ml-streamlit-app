@@ -4,6 +4,7 @@ setup.cfg
 setup.py
 src/course_ml_streamlit/__init__.py
 src/course_ml_streamlit/main.py
+src/course_ml_streamlit/preprocessing.py
 src/course_ml_streamlit/py.typed
 src/course_ml_streamlit.egg-info/PKG-INFO
 src/course_ml_streamlit.egg-info/SOURCES.txt
