@@ -3,8 +3,13 @@ import pandas as pd
 from course_ml_streamlit.preprocessing import preprocess
 
 
+def predict_line(data_line: pd.DataFrame) -> bool:
+    pass
+
+
 def process_input(data_line: pd.DataFrame) -> pd.DataFrame:
     # TODO: ensure on input that column has no underscores
+    # TODO: ensure here preprocess doesn't throw
     return preprocess(data_line=data_line)
 
 
@@ -15,6 +20,16 @@ def main() -> None:
 
     st.write(df)
 
+    new_df = st.data_editor(data=df.iloc[0])
+
+    processed_df = process_input(data_line=new_df)
+
+    prediction = predict_line(predict_line(data_line=processed_df))
+
+    st.markdown(body=f"""
+    The prediction for the input data is {prediction}.
+    The delivery will take *{"longer" if prediction else "shorter"}* than 3 days.
+    """)
 
 if __name__ == "__main__":
     main()
