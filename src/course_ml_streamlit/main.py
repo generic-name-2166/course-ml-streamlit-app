@@ -10,7 +10,11 @@ def predict_line(data_line: pd.DataFrame) -> bool:
 def process_input(data_line: pd.DataFrame) -> pd.DataFrame:
     # TODO: ensure on input that column has no underscores
     # TODO: ensure here preprocess doesn't throw
-    return preprocess(data_line=data_line)
+    try:
+        # A crutch for now
+        return preprocess(data_line=data_line)
+    except ValueError:
+        return data_line
 
 
 def main() -> None:
@@ -27,7 +31,7 @@ def main() -> None:
     prediction = predict_line(predict_line(data_line=processed_df))
 
     st.markdown(body=f"""
-    The prediction for the input data is {prediction}.
+    The prediction for the input data is {prediction}.\n
     The delivery will take *{"longer" if prediction else "shorter"}* than 3 days.
     """)
 
