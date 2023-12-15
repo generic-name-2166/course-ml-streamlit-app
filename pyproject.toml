@@ -10,4 +10,8 @@ addopts = "--cov=course_ml_streamlit"
 testpaths = [
     "tests",
 ]
-filterwarnings = "ignore::DeprecationWarning:dateutil.*:"
+# These warnings are caused by streamlit using outdated dependencies
+filterwarnings = [
+    "ignore::DeprecationWarning:dateutil.*:",
+    "ignore::DeprecationWarning:importlib.*:",
+]
