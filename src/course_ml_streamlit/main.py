@@ -28,10 +28,11 @@ def process_input(data_line: pd.DataFrame) -> pd.DataFrame:
     Check data for things such as extra underscores 
     which will mess with the processing
     """
+    idx = data_line.index[0]
     for column in data_line.columns:
-        value = data_line.at[0, column]
+        value = data_line.at[idx, column]
         if isinstance(value, str) and "_" in value:
-            data_line.at[0, column] = value.replace("_", " ")
+            data_line.at[idx, column] = value.replace("_", " ")
 
     return preprocess(data_line=data_line)
 
@@ -45,7 +46,7 @@ def main() -> None:
     )
 
     # Transposing DataFrame so that it is easier to edit it
-    new_df = st.data_editor(data=INPUT_DF.T, width=1000)
+    new_df = st.data_editor(data=INPUT_DF.T, width=1000, height=300)
 
     # DataFrame is transposed back for model
     st.button(
@@ -60,8 +61,8 @@ def main() -> None:
         prediction = st.session_state.prediction
         st.markdown(
             body=f"""
-            Прогноз для введённых данных - {prediction}.\n
-            Поставка займёт **{"больше" if prediction else "меньше"}** чем 3 дня.
+            #### Прогноз для введённых данных - {bool(prediction)}.\n
+            #### Поставка займёт **{"больше" if prediction else "меньше"}** чем 3 дня.
             """
         )
 
