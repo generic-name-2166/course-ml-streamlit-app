@@ -9,3 +9,5 @@ A streamlit app for classification graient boosting model
 
 # To install dev dependencies run in venv 
 - `pip install -e ".[testing]"`
+
+Crashes are likely caused by LightGBM, refer to this [FAQ](https://lightgbm.readthedocs.io/en/latest/FAQ.html#i-encounter-segmentation-faults-segfaults-randomly-after-installing-lightgbm-from-pypi-using-pip-install-lightgbm)

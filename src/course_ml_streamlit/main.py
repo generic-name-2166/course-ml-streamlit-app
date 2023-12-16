@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from course_ml_streamlit.preprocessing import preprocess
+from course_ml_streamlit.model import load_model_dt
 from course_ml_streamlit._data import INPUT_DF
 
 
@@ -10,18 +11,22 @@ def submit(df: pd.DataFrame):
     """
     processed_df = process_input(data_line=df)
 
-    st.session_state.prediction = predict_line(predict_line(data_line=processed_df))
+    st.session_state.prediction = predict_line(data_line=processed_df)
 
 
 @st.cache_data
-def predict_line(data_line: pd.DataFrame) -> bool:
-    return False
+def predict_line(data_line: pd.DataFrame) -> int:
+    model = load_model_dt()
+
+    pred = model.predict(X=data_line.to_numpy())
+    return int(pred[0])
 
 
 @st.cache_data
 def process_input(data_line: pd.DataFrame) -> pd.DataFrame:
     """
-    Process data for things such as extra underscores which will mess with the
+    Check data for things such as extra underscores 
+    which will mess with the processing
     """
     for column in data_line.columns:
         value = data_line.at[0, column]

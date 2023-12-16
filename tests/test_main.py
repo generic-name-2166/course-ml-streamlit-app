@@ -18,15 +18,16 @@ PRE_DF = pd.read_csv(
 UNDERSCORE_DFS = [add_underscore(value) for value in UNDERSCORES]
 
 
+def test_predicting():
+    assert isinstance(PRE_DF, pd.DataFrame)
+    prediction = app.predict_line(data_line=PRE_DF)
+    assert isinstance(prediction, int), type(prediction)
+
+
 @pytest.mark.parametrize("data_line", [INPUT_DF] + UNDERSCORE_DFS)
 def test_processing(data_line):
     processed = app.process_input(data_line=data_line)
     assert isinstance(processed, pd.DataFrame)
-
-
-def test_predicting():
-    prediction = app.predict_line(data_line=PRE_DF)
-    assert isinstance(prediction, bool)
 
 
 def test_submit():

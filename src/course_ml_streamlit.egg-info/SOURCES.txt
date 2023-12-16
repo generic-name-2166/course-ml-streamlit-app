@@ -3,7 +3,9 @@ pyproject.toml
 setup.cfg
 setup.py
 src/course_ml_streamlit/__init__.py
+src/course_ml_streamlit/_data.py
 src/course_ml_streamlit/main.py
+src/course_ml_streamlit/model.py
 src/course_ml_streamlit/preprocessing.py
 src/course_ml_streamlit/py.typed
 src/course_ml_streamlit/temp.py
@@ -13,4 +15,6 @@ src/course_ml_streamlit.egg-info/dependency_links.txt
 src/course_ml_streamlit.egg-info/not-zip-safe
 src/course_ml_streamlit.egg-info/requires.txt
 src/course_ml_streamlit.egg-info/top_level.txt
+tests/test_main.py
+tests/test_model.py
 tests/test_preprocessing.py
