@@ -8,7 +8,6 @@ src/course_ml_streamlit/main.py
 src/course_ml_streamlit/model.py
 src/course_ml_streamlit/preprocessing.py
 src/course_ml_streamlit/py.typed
-src/course_ml_streamlit/temp.py
 src/course_ml_streamlit.egg-info/PKG-INFO
 src/course_ml_streamlit.egg-info/SOURCES.txt
 src/course_ml_streamlit.egg-info/dependency_links.txt
