@@ -5,6 +5,9 @@ from course_ml_streamlit._data import INPUT_DF
 
 
 def submit(df: pd.DataFrame):
+    """
+    Stores model prediction in streamlit.session_state.prediction
+    """
     processed_df = process_input(data_line=df)
 
     st.session_state.prediction = predict_line(predict_line(data_line=processed_df))
@@ -17,7 +20,14 @@ def predict_line(data_line: pd.DataFrame) -> bool:
 
 @st.cache_data
 def process_input(data_line: pd.DataFrame) -> pd.DataFrame:
-    # TODO: ensure on input that column has no underscores
+    """
+    Process data for things such as extra underscores which will mess with the
+    """
+    for column in data_line.columns:
+        value = data_line.at[0, column]
+        if isinstance(value, str) and "_" in value:
+            data_line.at[0, column] = value.replace("_", " ")
+
     return preprocess(data_line=data_line)
 
 

@@ -3,6 +3,8 @@ import joblib
 import json
 import pandas as pd
 import numpy as np
+import streamlit as st
+from typing import Any
 
 
 class PreprocessingConfig:
@@ -23,12 +25,18 @@ class PreprocessingConfig:
         self.numeric_columns = columns.get("numeric_columns", [])
         self.category_columns = columns.get("category_columns", [])
         self.resulting_columns = columns.get("resulting_columns", [])
-        self.robust_sc = joblib.load("serialized/robust_sc.save")
+        self.robust_sc = self._load_scaler()
 
     @staticmethod
+    @st.cache_resource
     def _load_columns() -> dict:
         with open("serialized/columns_export.json") as F:
             return json.loads(F.read())
+
+    @staticmethod
+    @st.cache_resource
+    def _load_scaler():
+        return joblib.load("serialized/robust_sc.save")
 
     def scale_numeric(self, data_line: pd.DataFrame) -> pd.DataFrame:
         """
@@ -99,6 +107,12 @@ def _reindex_data(df: pd.DataFrame, new_index: list[str]) -> pd.DataFrame:
     return df.reindex(columns=new_index, fill_value=0, copy=True)
 
 
+def _check_for_underscore(value: Any) -> bool:
+    if isinstance(value, str) and "_" in value:
+        return True
+    return False
+
+
 def _config_factory(_instance=PreprocessingConfig()) -> PreprocessingConfig:
     """Theoretically always returns the same instance"""
     return _instance
@@ -107,6 +121,9 @@ def _config_factory(_instance=PreprocessingConfig()) -> PreprocessingConfig:
 def preprocess(data_line: pd.DataFrame) -> pd.DataFrame:
     if data_line.shape != (1, 15):
         raise ValueError("data_line is of invalid shape")
+    elif data_line.map(_check_for_underscore).any(axis=None):
+        raise ValueError("Invalid character in input data")
+
     preprocessing_config = _config_factory()
     scaled = preprocessing_config.scale_numeric(data_line=data_line)
     encoded = preprocessing_config.scale_categorical(data_line=scaled)

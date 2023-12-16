@@ -19,6 +19,13 @@ def test_infrequent():
     assert preprocessed.at[preprocessed.index[0], "Код_отправителя_груза_3437"] == 1
 
 
+@pytest.mark.parametrize("value", ["_test", "te_st", "test_", "t_es_t"])
+def test_underscores(value):
+    test_df = pd.DataFrame(data=[[value] * 15], columns=list(range(15)))
+    with pytest.raises(ValueError):
+        _ = c_pre.preprocess(test_df)
+
+
 def test_shape():
     test_df = pd.DataFrame(data=[["Test"]] * 15, columns=["Test"])
     with pytest.raises(ValueError):
