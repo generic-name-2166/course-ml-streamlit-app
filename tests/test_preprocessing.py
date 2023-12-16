@@ -1,6 +1,6 @@
 import pytest
 import course_ml_streamlit.preprocessing as c_pre
-from course_ml_streamlit._data import SAMPLE_DATA, SAMPLE_COLUMNS
+from course_ml_streamlit._data import SAMPLE_DATA, SAMPLE_COLUMNS, UNDERSCORES
 import pandas as pd
 
 
@@ -19,7 +19,7 @@ def test_infrequent():
     assert preprocessed.at[preprocessed.index[0], "Код_отправителя_груза_3437"] == 1
 
 
-@pytest.mark.parametrize("value", ["_test", "te_st", "test_", "t_es_t"])
+@pytest.mark.parametrize("value", UNDERSCORES)
 def test_underscores(value):
     test_df = pd.DataFrame(data=[[value] * 15], columns=list(range(15)))
     with pytest.raises(ValueError):

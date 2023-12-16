@@ -1,6 +1,7 @@
 import pandas as pd
 
 
+UNDERSCORES = ["_", "_test", "te_st", "test_", "t_es_t"]
 INPUT_DF = pd.DataFrame(
     data=[
         [
