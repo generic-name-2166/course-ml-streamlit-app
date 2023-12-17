@@ -62,7 +62,7 @@ def main() -> None:
         st.markdown(
             body=f"""
             #### Прогноз для введённых данных - {bool(prediction)}.\n
-            #### Поставка займёт **{"больше" if prediction else "меньше"}** чем 3 дня.
+            #### Поставка займёт {"более" if prediction else "менее"} 3 дней.
             """
         )
 
